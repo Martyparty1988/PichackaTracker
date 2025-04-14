@@ -19,14 +19,66 @@ type AuthContextType = {
 
 type LoginData = Pick<InsertUser, "username" | "password">;
 
+// Create proper empty mutation objects with required functions
+const createEmptyLoginMutation = (): UseMutationResult<SelectUser, Error, LoginData> => ({
+  mutate: () => {},
+  mutateAsync: async () => ({ id: 0, username: '', password: '', displayName: '', avatarInitials: '' }),
+  isPending: false,
+  isSuccess: false,
+  isError: false,
+  isIdle: true,
+  status: 'idle',
+  error: null,
+  data: undefined,
+  failureCount: 0,
+  failureReason: null,
+  variables: undefined,
+  reset: () => {},
+  context: undefined,
+});
+
+const createEmptyLogoutMutation = (): UseMutationResult<void, Error, void> => ({
+  mutate: () => {},
+  mutateAsync: async () => {},
+  isPending: false,
+  isSuccess: false,
+  isError: false,
+  isIdle: true,
+  status: 'idle',
+  error: null,
+  data: undefined,
+  failureCount: 0,
+  failureReason: null,
+  variables: undefined,
+  reset: () => {},
+  context: undefined,
+});
+
+const createEmptyRegisterMutation = (): UseMutationResult<SelectUser, Error, InsertUser> => ({
+  mutate: () => {},
+  mutateAsync: async () => ({ id: 0, username: '', password: '', displayName: '', avatarInitials: '' }),
+  isPending: false,
+  isSuccess: false,
+  isError: false,
+  isIdle: true,
+  status: 'idle',
+  error: null,
+  data: undefined,
+  failureCount: 0,
+  failureReason: null,
+  variables: undefined,
+  reset: () => {},
+  context: undefined,
+});
+
 // Create a default value for the context
 const defaultAuthContext: AuthContextType = {
   user: null,
   isLoading: false,
   error: null,
-  loginMutation: {} as UseMutationResult<SelectUser, Error, LoginData>,
-  logoutMutation: {} as UseMutationResult<void, Error, void>,
-  registerMutation: {} as UseMutationResult<SelectUser, Error, InsertUser>,
+  loginMutation: createEmptyLoginMutation(),
+  logoutMutation: createEmptyLogoutMutation(),
+  registerMutation: createEmptyRegisterMutation(),
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
