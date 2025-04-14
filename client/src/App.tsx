@@ -6,36 +6,21 @@ import WorkLogs from "@/pages/WorkLogs";
 import Finance from "@/pages/Finance";
 import Debts from "@/pages/Debts";
 import Settings from "@/pages/Settings";
-import Login from "@/pages/Login";
-import { useAuth } from "@/components/auth/AuthProvider";
+import AuthPage from "@/pages/auth-page";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-  
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-gray">
-        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-  
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-  
   return (
-    <AppLayout>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/work-logs" component={WorkLogs} />
-        <Route path="/finance" component={Finance} />
-        <Route path="/debts" component={Debts} />
-        <Route path="/settings" component={Settings} />
-        <Route component={NotFound} />
-      </Switch>
-    </AppLayout>
+    <Switch>
+      <ProtectedRoute path="/" component={Dashboard} />
+      <ProtectedRoute path="/work-logs" component={WorkLogs} />
+      <ProtectedRoute path="/finance" component={Finance} />
+      <ProtectedRoute path="/debts" component={Debts} />
+      <ProtectedRoute path="/settings" component={Settings} />
+      <Route path="/auth" component={AuthPage} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 

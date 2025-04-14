@@ -8,13 +8,13 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { CONSTANTS } from '@/lib/constants';
-import { useAuth } from '@/components/auth/AuthProvider';
+import { useAuth } from '@/hooks/use-auth';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
 
 export default function Settings() {
   const { toast } = useToast();
-  const { user, logout } = useAuth();
+  const { user, logoutMutation } = useAuth();
   const [exportFormat, setExportFormat] = useState('json');
   const [isConfirmLogoutOpen, setIsConfirmLogoutOpen] = useState(false);
 
@@ -30,10 +30,10 @@ export default function Settings() {
       };
       
       // Create a blob from the data
-      let blob;
+      let blob: Blob;
       if (exportFormat === 'json') {
         blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-      } else if (exportFormat === 'csv') {
+      } else {
         // Simple CSV format for demo
         const csvContent = 'timestamp,type,data\n' + new Date().toISOString() + ',export,"See JSON for full data"';
         blob = new Blob([csvContent], { type: 'text/csv' });
@@ -67,12 +67,8 @@ export default function Settings() {
   };
   
   const handleLogout = () => {
-    logout();
+    logoutMutation.mutate();
     setIsConfirmLogoutOpen(false);
-    toast({
-      title: "Odhlášení úspěšné",
-      description: "Byli jste úspěšně odhlášeni.",
-    });
   };
   
   return (

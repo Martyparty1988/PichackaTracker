@@ -4,63 +4,11 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { insertWorkLogSchema, insertFinanceSchema, insertDebtSchema, insertDebtPaymentSchema, insertTimerSessionSchema, insertUserSchema } from "@shared/schema";
 import { CONSTANTS } from "../client/src/lib/constants";
+import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Authentication routes
-  app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
-    
-    try {
-      const user = await storage.getUserByUsername(username);
-      
-      if (!user || user.password !== password) {
-        return res.status(401).json({ message: "Invalid credentials" });
-      }
-      
-      // In a real app, you would create a JWT token here
-      const token = "mock_jwt_token";
-      
-      return res.status(200).json({
-        token,
-        user: {
-          id: user.id,
-          username: user.username,
-          displayName: user.displayName,
-          avatarInitials: user.avatarInitials
-        }
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      return res.status(500).json({ message: "Server error" });
-    }
-  });
-  
-  app.post('/api/auth/logout', (req, res) => {
-    // In a real app, you would invalidate the JWT token here
-    return res.status(200).json({ message: "Logged out successfully" });
-  });
-  
-  app.get('/api/auth/me', async (req, res) => {
-    // Mock authentication - in a real app, you would verify the JWT token here
-    // For simplicity, we'll return a mock user
-    try {
-      const user = await storage.getUserByUsername("demo@example.com");
-      
-      if (!user) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
-      
-      return res.status(200).json({
-        id: user.id,
-        username: user.username,
-        displayName: user.displayName,
-        avatarInitials: user.avatarInitials
-      });
-    } catch (error) {
-      console.error("Auth check error:", error);
-      return res.status(500).json({ message: "Server error" });
-    }
-  });
+  // Sets up /api/register, /api/login, /api/logout, /api/user
+  setupAuth(app);
   
   // Work Logs routes
   app.get('/api/work-logs', async (req, res) => {
@@ -298,14 +246,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const debts = await storage.getAllDebts();
       
-      const totalDebt = debts.reduce((sum, debt) => sum + debt.totalAmount, 0);
-      const totalPaid = debts.reduce((sum, debt) => sum + debt.paidAmount, 0);
+      let totalDebt = 0;
+      let totalPaid = 0;
+      
+      debts.forEach(debt => {
+        totalDebt += Number(debt.totalAmount);
+        totalPaid += Number(debt.paidAmount);
+      });
       
       // Assign colors to each debt
       const colors = ['#B39DDB', '#FFCC80', '#FFF59D', '#E6D7C3', '#F5F5F5'];
       const debtsWithColors = debts.map((debt, index) => ({
         name: debt.name,
-        amount: debt.remainingAmount,
+        amount: Number(debt.remainingAmount),
         color: colors[index % colors.length]
       }));
       
