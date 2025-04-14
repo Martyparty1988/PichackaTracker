@@ -7,7 +7,38 @@
     @apply border-border;
   }
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
+    overflow-x: hidden;
+    min-height: 100%;
+    user-select: none;
+  }
+  
+  /* Enable selection only in input fields */
+  input, textarea {
+    user-select: text;
+  }
+  
+  /* Fix button active state on iOS */
+  button:active {
+    opacity: 0.8;
+  }
+  
+  /* Fix iOS input shadow */
+  input, textarea {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
   }
 }
