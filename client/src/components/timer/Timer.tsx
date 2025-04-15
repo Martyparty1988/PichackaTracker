@@ -17,6 +17,8 @@ export function Timer() {
   const activities = CONSTANTS.ACTIVITIES;
   const [showTooltip, setShowTooltip] = useState(false);
   
+  // No need for an additional interval here as the useTimer hook already has one
+  
   // Determine if we've been running a long time (more than 8 hours)
   const isLongSession = timer.status !== 'stopped' && 
     timer.currentDurationMinutes > 8 * 60;
@@ -175,10 +177,10 @@ export function Timer() {
               }}
               animate={{ 
                 strokeDashoffset: timer.status === 'running' ? 0 : 
-                                 timer.status === 'paused' ? timer.currentProgressOffset : 264
+                                 timer.status === 'paused' ? 132 : 264
               }}
               transition={{ 
-                duration: timer.status === 'running' ? (timer.currentProgressOffset / 264) * 60 : 0.5,
+                duration: timer.status === 'running' ? 60 : 0.5,
                 ease: timer.status === 'stopped' ? "backIn" : 
                       timer.status === 'paused' ? "circOut" : "linear"
               }}
