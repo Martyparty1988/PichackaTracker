@@ -120,14 +120,49 @@ export default function Finance() {
                         data={chartData.monthly}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => formatCurrency(value as number)} />
-                        <Legend />
-                        <Line type="monotone" dataKey="income" name="Příjmy" stroke="#B39DDB" activeDot={{ r: 8 }} />
-                        <Line type="monotone" dataKey="expenses" name="Výdaje" stroke="#FFCC80" />
-                        <Line type="monotone" dataKey="deduction" name="Srážky" stroke="#FFF59D" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="name" tick={{ fill: '#666' }} />
+                        <YAxis tick={{ fill: '#666' }} />
+                        <Tooltip 
+                          formatter={(value) => formatCurrency(value as number)}
+                          contentStyle={{ 
+                            backgroundColor: 'white', 
+                            border: '1px solid #f0f0f0',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                          }}
+                        />
+                        <Legend 
+                          iconType="circle" 
+                          wrapperStyle={{ paddingTop: 10 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="income" 
+                          name="Příjmy" 
+                          stroke="#3b82f6" 
+                          strokeWidth={2}
+                          dot={{ fill: '#3b82f6', r: 4 }}
+                          activeDot={{ r: 6, fill: '#3b82f6' }} 
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="expenses" 
+                          name="Výdaje" 
+                          stroke="#ef4444" 
+                          strokeWidth={2}
+                          dot={{ fill: '#ef4444', r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="deduction" 
+                          name="Srážky" 
+                          stroke="#f59e0b" 
+                          strokeWidth={2}
+                          dot={{ fill: '#f59e0b', r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   )}
@@ -142,21 +177,54 @@ export default function Finance() {
                         data={chartData.currencies}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="name" tick={{ fill: '#666' }} />
+                        <YAxis tick={{ fill: '#666' }} />
                         <Tooltip 
                           formatter={(value, name) => [
                             name === "CZK" ? formatCurrency(value as number) : 
                             name === "EUR" ? formatCurrency(value as number, "EUR") : 
                             formatCurrency(value as number, "USD"),
                             name
-                          ]} 
+                          ]}
+                          contentStyle={{ 
+                            backgroundColor: 'white', 
+                            border: '1px solid #f0f0f0',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                          }}
                         />
-                        <Legend />
-                        <Line type="monotone" dataKey="CZK" name="CZK" stroke="#B39DDB" />
-                        <Line type="monotone" dataKey="EUR" name="EUR" stroke="#FFCC80" />
-                        <Line type="monotone" dataKey="USD" name="USD" stroke="#FFF59D" />
+                        <Legend 
+                          iconType="circle" 
+                          wrapperStyle={{ paddingTop: 10 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="CZK" 
+                          name="CZK" 
+                          stroke="#3b82f6" 
+                          strokeWidth={2}
+                          dot={{ fill: '#3b82f6', r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="EUR" 
+                          name="EUR" 
+                          stroke="#16a34a" 
+                          strokeWidth={2}
+                          dot={{ fill: '#16a34a', r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="USD" 
+                          name="USD" 
+                          stroke="#dc2626" 
+                          strokeWidth={2}
+                          dot={{ fill: '#dc2626', r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   )}
