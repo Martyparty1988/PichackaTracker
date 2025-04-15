@@ -52,90 +52,51 @@ export function TimerControls() {
     });
   };
   
-  // Animations for the buttons
-  const buttonVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
-    tap: { scale: 0.97 }
-  };
-  
   return (
-    <div className="flex flex-wrap gap-3 justify-center">
+    <div className="flex flex-wrap gap-2 justify-center w-full max-w-sm">
       {status === 'stopped' && (
-        <motion.div
-          initial="initial"
-          animate="animate"
-          whileTap="tap"
-          variants={buttonVariants}
-          className="w-full sm:w-auto flex justify-center"
+        <Button
+          onClick={handleStart}
+          size="lg"
+          className="w-full py-5 bg-gray-800 hover:bg-gray-900 text-white"
         >
-          <Button
-            onClick={handleStart}
-            size="lg"
-            className="rounded-full px-6 py-6 h-auto w-[60%] sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-md"
-          >
-            <PlayCircle className="mr-2 h-5 w-5" />
-            <span className="font-medium">Start</span>
-          </Button>
-        </motion.div>
+          <PlayCircle className="mr-2 h-5 w-5" />
+          <span className="font-medium">Start</span>
+        </Button>
       )}
       
       {status === 'running' && (
-        <motion.div
-          initial="initial"
-          animate="animate"
-          whileTap="tap"
-          variants={buttonVariants}
-          className="flex-1 sm:flex-none"
+        <Button
+          onClick={handlePause}
+          size="lg"
+          className="flex-1 bg-amber-500 hover:bg-amber-600 text-white"
         >
-          <Button
-            onClick={handlePause}
-            size="lg"
-            className="rounded-full px-5 py-2 h-12 w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white shadow-md"
-          >
-            <Pause className="mr-2 h-4 w-4" />
-            <span className="font-medium">Pauza</span>
-          </Button>
-        </motion.div>
+          <Pause className="mr-2 h-4 w-4" />
+          <span className="font-medium">Pauza</span>
+        </Button>
       )}
       
       {status === 'paused' && (
-        <motion.div
-          initial="initial"
-          animate="animate"
-          whileTap="tap"
-          variants={buttonVariants}
-          className="flex-1 sm:flex-none"
+        <Button
+          onClick={handleResume}
+          size="lg"
+          className="flex-1 bg-gray-800 hover:bg-gray-900 text-white"
         >
-          <Button
-            onClick={handleResume}
-            size="lg"
-            className="rounded-full px-5 py-2 h-12 w-full sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-md"
-          >
-            <Play className="mr-2 h-4 w-4" />
-            <span className="font-medium">Pokračovat</span>
-          </Button>
-        </motion.div>
+          <Play className="mr-2 h-4 w-4" />
+          <span className="font-medium">Pokračovat</span>
+        </Button>
       )}
       
       {(status === 'running' || status === 'paused') && (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <motion.div
-              initial="initial"
-              animate="animate"
-              whileTap="tap"
-              variants={buttonVariants}
-              className="flex-1 sm:flex-none"
+            <Button
+              size="lg"
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white"
             >
-              <Button
-                size="lg"
-                className="rounded-full px-5 py-2 h-12 w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white shadow-md"
-              >
-                <StopCircle className="mr-2 h-4 w-4" />
-                <span className="font-medium">Ukončit</span>
-              </Button>
-            </motion.div>
+              <StopCircle className="mr-2 h-4 w-4" />
+              <span className="font-medium">Ukončit</span>
+            </Button>
           </AlertDialogTrigger>
           <AlertDialogContent className="rounded-lg">
             <AlertDialogHeader>
@@ -146,7 +107,7 @@ export function TimerControls() {
             </AlertDialogHeader>
             <AlertDialogFooter className="flex space-x-2">
               <AlertDialogCancel className="mt-0">Zrušit</AlertDialogCancel>
-              <AlertDialogAction onClick={handleStop} className="bg-primary hover:bg-primary/90">
+              <AlertDialogAction onClick={handleStop} className="bg-gray-800 hover:bg-gray-900">
                 Uložit záznam
               </AlertDialogAction>
             </AlertDialogFooter>

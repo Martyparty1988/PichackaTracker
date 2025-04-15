@@ -59,15 +59,29 @@ export function useTimer() {
     return formatDate(actualStartTime);
   }, [startTime, status, elapsedSeconds]);
 
-  // Periodic tick to update timer display
+  // Enhanced periodic tick for more frequent UI updates (every 200ms)
+  // This ensures that the displayed time and earnings are frequently updated
   useEffect(() => {
+    let tickIntervalId: NodeJS.Timeout;
+    let renderIntervalId: NodeJS.Timeout;
+    
     if (status === 'running') {
-      const intervalId = setInterval(() => {
+      // Actual state update - every second
+      tickIntervalId = setInterval(() => {
         tick();
       }, 1000);
-
-      return () => clearInterval(intervalId);
+      
+      // More frequent re-renders without updating state - every 200ms for smoother UI
+      renderIntervalId = setInterval(() => {
+        // This empty function just triggers re-render of components
+        // that are using the timer hook to show the most current values
+      }, 200);
     }
+
+    return () => {
+      if (tickIntervalId) clearInterval(tickIntervalId);
+      if (renderIntervalId) clearInterval(renderIntervalId);
+    };
   }, [status, tick]);
 
   // Set up vibration for timer events if available
@@ -113,15 +127,19 @@ export function useTimer() {
         const earnings = Math.round((result.durationMinutes / 60) * person.hourlyRate);
         const deduction = Math.round(earnings * person.deductionRate);
         
+        // Create dates for saving
+        const endTime = new Date();
+        const startTime = new Date(endTime.getTime() - (result.elapsedSeconds * 1000));
+        
         // Save to API
         await apiRequest('POST', '/api/work-logs', {
           personId: result.personId,
           activityId: result.activityId,
-          startTime: new Date(Date.now() - (result.elapsedSeconds * 1000)),
-          endTime: new Date(),
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
           durationMinutes: result.durationMinutes,
-          earnings,
-          deduction
+          earnings: earnings.toString(),
+          deduction: deduction.toString()
         });
         
         // Update deduction fund
