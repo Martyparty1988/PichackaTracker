@@ -3,6 +3,18 @@ import { useTimer } from '@/hooks/useTimer';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
+import { PlayCircle, PauseCircle, StopCircle, Play, Pause, CheckCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function TimerControls() {
   const { status, actions } = useTimer();
@@ -33,79 +45,113 @@ export function TimerControls() {
   };
   
   const handleStop = () => {
-    if (confirm("Opravdu chcete ukončit a uložit tento pracovní záznam?")) {
-      actions.stop();
-      toast({
-        title: "Záznam uložen",
-        description: "Váš pracovní záznam byl úspěšně uložen.",
-      });
-    }
+    actions.stop();
+    toast({
+      title: "Záznam uložen",
+      description: "Váš pracovní záznam byl úspěšně uložen.",
+    });
+  };
+  
+  // Animations for the buttons
+  const buttonVariants = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+    tap: { scale: 0.97 }
   };
   
   return (
-    <div className="flex space-x-4">
+    <div className="flex flex-wrap gap-3 justify-center">
       {status === 'stopped' && (
         <motion.div
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
+          initial="initial"
+          animate="animate"
+          whileTap="tap"
+          variants={buttonVariants}
+          className="w-full sm:w-auto flex justify-center"
         >
           <Button
             onClick={handleStart}
-            className="py-3 px-6 rounded-full bg-primary text-white font-medium hover:bg-primary-dark transition-colors"
+            size="lg"
+            className="rounded-full px-6 py-6 h-auto w-[60%] sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-md"
           >
-            <i className='bx bx-play mr-2'></i> Start
+            <PlayCircle className="mr-2 h-5 w-5" />
+            <span className="font-medium">Start</span>
           </Button>
         </motion.div>
       )}
       
       {status === 'running' && (
         <motion.div
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
+          initial="initial"
+          animate="animate"
+          whileTap="tap"
+          variants={buttonVariants}
+          className="flex-1 sm:flex-none"
         >
           <Button
             onClick={handlePause}
-            className="py-3 px-6 rounded-full bg-accent text-dark font-medium hover:bg-accent-dark transition-colors"
+            size="lg"
+            className="rounded-full px-5 py-2 h-12 w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white shadow-md"
           >
-            <i className='bx bx-pause mr-2'></i> Pauza
+            <Pause className="mr-2 h-4 w-4" />
+            <span className="font-medium">Pauza</span>
           </Button>
         </motion.div>
       )}
       
       {status === 'paused' && (
         <motion.div
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
+          initial="initial"
+          animate="animate"
+          whileTap="tap"
+          variants={buttonVariants}
+          className="flex-1 sm:flex-none"
         >
           <Button
             onClick={handleResume}
-            className="py-3 px-6 rounded-full bg-primary text-white font-medium hover:bg-primary-dark transition-colors"
+            size="lg"
+            className="rounded-full px-5 py-2 h-12 w-full sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-md"
           >
-            <i className='bx bx-play mr-2'></i> Pokračovat
+            <Play className="mr-2 h-4 w-4" />
+            <span className="font-medium">Pokračovat</span>
           </Button>
         </motion.div>
       )}
       
       {(status === 'running' || status === 'paused') && (
-        <motion.div
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Button
-            onClick={handleStop}
-            className="py-3 px-6 rounded-full bg-secondary text-dark font-medium hover:bg-secondary-dark transition-colors"
-          >
-            <i className='bx bx-stop mr-2'></i> Stop
-          </Button>
-        </motion.div>
+        <ShadcnAlertDialog>
+          <ShadcnAlertDialogTrigger asChild>
+            <motion.div
+              initial="initial"
+              animate="animate"
+              whileTap="tap"
+              variants={buttonVariants}
+              className="flex-1 sm:flex-none"
+            >
+              <Button
+                size="lg"
+                className="rounded-full px-5 py-2 h-12 w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white shadow-md"
+              >
+                <StopCircle className="mr-2 h-4 w-4" />
+                <span className="font-medium">Ukončit</span>
+              </Button>
+            </motion.div>
+          </ShadcnAlertDialogTrigger>
+          <ShadcnAlertDialogContent className="rounded-lg">
+            <ShadcnAlertDialogHeader>
+              <ShadcnAlertDialogTitle>Ukončit měření času?</ShadcnAlertDialogTitle>
+              <ShadcnAlertDialogDescription>
+                Opravdu chcete ukončit a uložit tento pracovní záznam? Tato akce se nedá vrátit.
+              </ShadcnAlertDialogDescription>
+            </ShadcnAlertDialogHeader>
+            <ShadcnAlertDialogFooter className="flex space-x-2">
+              <ShadcnAlertDialogCancel className="mt-0">Zrušit</ShadcnAlertDialogCancel>
+              <ShadcnAlertDialogAction onClick={handleStop} className="bg-primary hover:bg-primary/90">
+                Uložit záznam
+              </ShadcnAlertDialogAction>
+            </ShadcnAlertDialogFooter>
+          </ShadcnAlertDialogContent>
+        </ShadcnAlertDialog>
       )}
     </div>
   );

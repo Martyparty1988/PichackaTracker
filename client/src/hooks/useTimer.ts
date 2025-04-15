@@ -1,15 +1,19 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import useTimerStore from '@/lib/timerStore';
 import { apiRequest } from '@/lib/queryClient';
 import { queryClient } from '@/lib/queryClient';
 import useFinancesStore from '@/lib/financesStore';
 import { CONSTANTS } from '@/lib/constants';
+import { formatDate, formatTime } from '@/lib/utils';
 
 export function useTimer() {
   const {
     personId,
     activityId,
     status,
+    startTime,
+    elapsedSeconds,
+    pausedDurationSeconds,
     setPersonId,
     setActivityId,
     start,
@@ -29,6 +33,32 @@ export function useTimer() {
   const person = CONSTANTS.PERSONS.find(p => p.id === personId);
   const activity = CONSTANTS.ACTIVITIES.find(a => a.id === activityId);
 
+  // Calculate current duration in minutes for display
+  const currentDurationMinutes = useMemo(() => {
+    let totalSeconds = elapsedSeconds;
+    
+    if (status === 'running' && startTime) {
+      const now = Date.now();
+      totalSeconds += Math.floor((now - startTime) / 1000) - pausedDurationSeconds;
+    }
+    
+    return Math.floor(totalSeconds / 60);
+  }, [elapsedSeconds, status, startTime, pausedDurationSeconds]);
+
+  // Format the start time for display
+  const startTimeFormatted = useMemo(() => {
+    if (!startTime) return '';
+    
+    // If we're in a stopped state, calculate when the timer actually started
+    if (status === 'stopped') {
+      return '—';
+    }
+    
+    // For running or paused, calculate when the timer started
+    const actualStartTime = new Date(Date.now() - (elapsedSeconds * 1000) - (startTime ? Date.now() - startTime : 0));
+    return formatDate(actualStartTime);
+  }, [startTime, status, elapsedSeconds]);
+
   // Periodic tick to update timer display
   useEffect(() => {
     if (status === 'running') {
@@ -40,8 +70,38 @@ export function useTimer() {
     }
   }, [status, tick]);
 
+  // Set up vibration for timer events if available
+  const vibrateDevice = useCallback((pattern: number | number[]) => {
+    if ('vibrate' in navigator) {
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {
+        console.log('Vibration not supported');
+      }
+    }
+  }, []);
+
+  // Enhanced start function with haptic feedback
+  const enhancedStart = useCallback(() => {
+    vibrateDevice(100);
+    start();
+  }, [start, vibrateDevice]);
+
+  // Enhanced pause function with haptic feedback
+  const enhancedPause = useCallback(() => {
+    vibrateDevice([50, 50, 50]);
+    pause();
+  }, [pause, vibrateDevice]);
+
+  // Enhanced resume function with haptic feedback
+  const enhancedResume = useCallback(() => {
+    vibrateDevice(100);
+    resume();
+  }, [resume, vibrateDevice]);
+
   // Handle stopping the timer and saving the work log
   const handleStop = useCallback(async () => {
+    vibrateDevice([100, 100, 200]);
     const result = stop();
     
     if (result.durationMinutes > 0) {
@@ -76,7 +136,7 @@ export function useTimer() {
         console.error('Failed to save work log:', error);
       }
     }
-  }, [stop, reset, updateDeductionFund]);
+  }, [stop, reset, updateDeductionFund, vibrateDevice]);
 
   return {
     personId,
@@ -87,12 +147,14 @@ export function useTimer() {
     formattedTime: getFormattedTime(),
     currentEarnings: getCurrentEarnings(),
     currentDeduction: getCurrentDeduction(),
+    currentDurationMinutes,
+    startTimeFormatted,
     actions: {
       setPersonId,
       setActivityId,
-      start,
-      pause,
-      resume,
+      start: enhancedStart,
+      pause: enhancedPause,
+      resume: enhancedResume,
       stop: handleStop
     }
   };
