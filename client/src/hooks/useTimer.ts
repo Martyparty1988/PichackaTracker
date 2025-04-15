@@ -59,30 +59,34 @@ export function useTimer() {
     return formatDate(actualStartTime);
   }, [startTime, status, elapsedSeconds]);
 
-  // Enhanced periodic tick for more frequent UI updates (every 200ms)
-  // This ensures that the displayed time and earnings are frequently updated
+  // Enhanced periodic tick for more frequent UI updates
+  // This ensures that the displayed time and earnings are updated every 100ms
   useEffect(() => {
-    let tickIntervalId: NodeJS.Timeout;
-    let renderIntervalId: NodeJS.Timeout;
+    let ticking = false;
+    let intervalId: NodeJS.Timeout;
     
     if (status === 'running') {
-      // Actual state update - every second
-      tickIntervalId = setInterval(() => {
-        tick();
-      }, 1000);
-      
-      // More frequent re-renders without updating state - every 200ms for smoother UI
-      renderIntervalId = setInterval(() => {
-        // This empty function just triggers re-render of components
-        // that are using the timer hook to show the most current values
-      }, 200);
+      // Update every 100ms for smooth UI updates
+      intervalId = setInterval(() => {
+        // Podmínka zajistí, že se tick() zavolá maximálně jednou za sekundu
+        if (!ticking && Date.now() % 1000 < 100) {
+          ticking = true;
+          tick();
+          setTimeout(() => {
+            ticking = false;
+          }, 1000);
+        }
+        
+        // Force re-render pro aktualizaci UI
+        getCurrentEarnings();
+        getFormattedTime();
+      }, 100);
     }
 
     return () => {
-      if (tickIntervalId) clearInterval(tickIntervalId);
-      if (renderIntervalId) clearInterval(renderIntervalId);
+      if (intervalId) clearInterval(intervalId);
     };
-  }, [status, tick]);
+  }, [status, tick, getCurrentEarnings, getFormattedTime]);
 
   // Set up vibration for timer events if available
   const vibrateDevice = useCallback((pattern: number | number[]) => {

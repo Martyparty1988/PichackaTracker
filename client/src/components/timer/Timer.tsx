@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTimer } from '@/hooks/useTimer';
 import { TimerControls } from './TimerControls';
 import { CONSTANTS } from '@/lib/constants';
@@ -102,15 +102,9 @@ export function Timer() {
         </Select>
       </div>
       
-      {/* Motivační slogan nad časovačem - náhodně vybere jeden ze seznamu */}
+      {/* Fixní motivační slogan - jeden stačí */}
       <div className="mb-3 text-center text-gray-600 italic px-4">
-        {[
-          "Každá minuta se počítá! 💪",
-          "Produktivní den = šťastný den ✨",
-          "Soustřeď se na přítomný okamžik 🧘",
-          "Malé kroky vedou k velkým výsledkům 🚶‍♂️",
-          "Tvůj čas je tvoje nejcennější investice ⏱️"
-        ][Math.floor(Math.random() * 5)]}
+        Každá minuta se počítá! 💪
       </div>
       
       {/* Simplified Timer Display with focus on readability */}
