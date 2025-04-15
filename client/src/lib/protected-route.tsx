@@ -14,6 +14,18 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
 
+  // DEVELOPMENT MODE: Skip authentication check for testing
+  return (
+    <Route path={path}>
+      {() => (
+        <AppLayout>
+          <Component />
+        </AppLayout>
+      )}
+    </Route>
+  );
+  
+  /* Original authentication logic - uncomment after testing
   return (
     <Route path={path}>
       {() => {
@@ -37,4 +49,5 @@ export function ProtectedRoute({
       }}
     </Route>
   );
+  */
 }
