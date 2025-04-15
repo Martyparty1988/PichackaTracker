@@ -119,8 +119,8 @@ export function TimerControls() {
       )}
       
       {(status === 'running' || status === 'paused') && (
-        <ShadcnAlertDialog>
-          <ShadcnAlertDialogTrigger asChild>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
             <motion.div
               initial="initial"
               animate="animate"
@@ -136,22 +136,22 @@ export function TimerControls() {
                 <span className="font-medium">Ukončit</span>
               </Button>
             </motion.div>
-          </ShadcnAlertDialogTrigger>
-          <ShadcnAlertDialogContent className="rounded-lg">
-            <ShadcnAlertDialogHeader>
-              <ShadcnAlertDialogTitle>Ukončit měření času?</ShadcnAlertDialogTitle>
-              <ShadcnAlertDialogDescription>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="rounded-lg">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Ukončit měření času?</AlertDialogTitle>
+              <AlertDialogDescription>
                 Opravdu chcete ukončit a uložit tento pracovní záznam? Tato akce se nedá vrátit.
-              </ShadcnAlertDialogDescription>
-            </ShadcnAlertDialogHeader>
-            <ShadcnAlertDialogFooter className="flex space-x-2">
-              <ShadcnAlertDialogCancel className="mt-0">Zrušit</ShadcnAlertDialogCancel>
-              <ShadcnAlertDialogAction onClick={handleStop} className="bg-primary hover:bg-primary/90">
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex space-x-2">
+              <AlertDialogCancel className="mt-0">Zrušit</AlertDialogCancel>
+              <AlertDialogAction onClick={handleStop} className="bg-primary hover:bg-primary/90">
                 Uložit záznam
-              </ShadcnAlertDialogAction>
-            </ShadcnAlertDialogFooter>
-          </ShadcnAlertDialogContent>
-        </ShadcnAlertDialog>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );

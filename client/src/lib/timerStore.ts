@@ -15,7 +15,12 @@ interface TimerState {
   start: () => void;
   pause: () => void;
   resume: () => void;
-  stop: () => void;
+  stop: () => { 
+    elapsedSeconds: number; 
+    durationMinutes: number; 
+    personId: number; 
+    activityId: number; 
+  };
   reset: () => void;
   tick: () => void;
   getFormattedTime: () => string;
