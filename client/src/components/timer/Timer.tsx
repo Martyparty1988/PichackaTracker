@@ -100,58 +100,183 @@ export function Timer() {
         </Select>
       </div>
       
-      {/* Timer Display with animations */}
+      {/* Enhanced Timer Display with sophisticated animations */}
       <div className="flex flex-col items-center justify-center">
-        <div className="relative w-56 h-56 sm:w-64 sm:h-64 mb-6">
-          <svg className="w-full h-full" viewBox="0 0 100 100">
-            {/* Background circle */}
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#F5F5F5" strokeWidth="8" />
+        <div className="relative w-60 h-60 sm:w-72 sm:h-72 mb-6">
+          <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+            {/* Base track circle */}
+            <circle 
+              cx="50" 
+              cy="50" 
+              r="42" 
+              fill="none" 
+              stroke="#F5F5F5" 
+              strokeWidth="3" 
+              className="opacity-80"
+            />
             
-            {/* Progress circle with better animation */}
+            {/* Accent track */}
+            <circle 
+              cx="50" 
+              cy="50" 
+              r="42" 
+              fill="none" 
+              stroke="#E5E7EB" 
+              strokeWidth="1" 
+              strokeDasharray="4,6"
+              className="opacity-50"
+            />
+            
+            {/* 60 minute markers */}
+            {[...Array(60)].map((_, i) => {
+              const isQuarter = i % 15 === 0;
+              const isFiveMin = i % 5 === 0;
+              
+              return (
+                <line 
+                  key={i}
+                  x1="50" 
+                  y1="8" 
+                  x2="50" 
+                  y2={isQuarter ? "10" : isFiveMin ? "11" : "12"}
+                  stroke={isQuarter ? "#6366F1" : isFiveMin ? "#94A3B8" : "#D1D5DB"}
+                  strokeWidth={isQuarter ? "2" : "1"}
+                  strokeLinecap="round"
+                  transform={`rotate(${i * 6} 50 50)`}
+                  className={isQuarter ? "opacity-90" : "opacity-50"}
+                />
+              );
+            })}
+            
+            {/* Inside fill circle for backdrop */}
+            <circle 
+              cx="50" 
+              cy="50" 
+              r="35" 
+              fill="#FFFFFF" 
+              className="opacity-30" 
+            />
+            
+            {/* Progress circle with enhanced animation */}
             <motion.circle
               cx="50" 
               cy="50" 
-              r="45" 
+              r="42" 
               fill="none" 
               stroke={timer.status === 'running' ? "#6366F1" : 
                       timer.status === 'paused' ? "#F59E0B" : "#94A3B8"}
-              strokeWidth="8" 
+              strokeWidth="6" 
               strokeLinecap="round"
-              strokeDasharray="283"
-              strokeDashoffset={timer.status === 'stopped' ? 283 : 0}
-              initial={{ strokeDashoffset: timer.status === 'stopped' ? 283 : 0 }}
+              strokeDasharray="264"
+              strokeDashoffset="264"
+              initial={{ 
+                strokeDashoffset: 264,
+                pathLength: 1
+              }}
               animate={{ 
-                strokeDashoffset: timer.status === 'running' ? [0, 283] : undefined,
+                strokeDashoffset: timer.status === 'running' ? 0 : 
+                                 timer.status === 'paused' ? timer.currentProgressOffset : 264
               }}
               transition={{ 
-                duration: 60, 
-                repeat: Infinity, 
-                repeatType: "loop",
-                ease: "linear"
+                duration: timer.status === 'running' ? (timer.currentProgressOffset / 264) * 60 : 0.5,
+                ease: timer.status === 'stopped' ? "backIn" : 
+                      timer.status === 'paused' ? "circOut" : "linear"
               }}
             />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <motion.span 
-              className="text-4xl sm:text-5xl font-bold"
-              animate={{ scale: timer.status === 'running' ? [1, 1.02, 1] : 1 }}
-              transition={{ duration: 2, repeat: timer.status === 'running' ? Infinity : 0 }}
-            >
-              {timer.formattedTime}
-            </motion.span>
             
-            {/* Activity indicator */}
-            {timer.activity && (
-              <div className="flex items-center mt-2">
-                <span 
-                  className="w-2 h-2 rounded-full mr-1 flex-shrink-0" 
-                  style={{ backgroundColor: timer.activity.color }}
-                ></span>
-                <span className="text-gray-500 text-sm">
-                  {timer.activity.name}
-                </span>
-              </div>
+            {/* Animated dots on the progress circle */}
+            {timer.status === 'running' && (
+              <motion.circle
+                cx="50"
+                cy="8"
+                r="2.5"
+                fill="#6366F1"
+                animate={{ 
+                  rotate: [0, 360] 
+                }}
+                transition={{ 
+                  duration: 60,
+                  ease: "linear",
+                  repeat: Infinity
+                }}
+                style={{ 
+                  transformOrigin: "center center",
+                  filter: "drop-shadow(0 0 2px rgba(99, 102, 241, 0.5))"
+                }}
+              />
             )}
+            
+            {/* Secondary time markers */}
+            <circle 
+              cx="50" 
+              cy="50" 
+              r="30" 
+              fill="none" 
+              stroke="#F3F4F6" 
+              strokeWidth="1" 
+              className="opacity-70"
+            />
+          </svg>
+          
+          {/* Center content with time display */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <motion.div
+              className="flex flex-col items-center justify-center bg-white rounded-full w-40 h-40 shadow-sm"
+              animate={{ 
+                scale: timer.status === 'running' ? [1, 1.005, 1] : 1,
+                boxShadow: timer.status === 'running' ? 
+                  ['0 0 0 rgba(99, 102, 241, 0)', '0 0 15px rgba(99, 102, 241, 0.2)', '0 0 0 rgba(99, 102, 241, 0)'] : 
+                  '0 0 0 rgba(99, 102, 241, 0)'
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: timer.status === 'running' ? Infinity : 0,
+                repeatType: "reverse"
+              }}
+            >
+              <motion.span 
+                className="text-4xl sm:text-5xl font-bold"
+                animate={{ 
+                  scale: timer.status === 'running' ? [1, 1.01, 1] : 1,
+                  color: timer.status === 'running' ? ['#1F2937', '#4F46E5', '#1F2937'] : '#1F2937'
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: timer.status === 'running' ? Infinity : 0
+                }}
+              >
+                {timer.formattedTime}
+              </motion.span>
+              
+              {/* Activity indicator with enhanced styling */}
+              {timer.activity && (
+                <div className="flex items-center gap-1 mt-2 bg-gray-50 px-3 py-1 rounded-full">
+                  <span 
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
+                    style={{ backgroundColor: timer.activity.color }}
+                  />
+                  <span className="text-gray-600 text-sm font-medium">
+                    {timer.activity.name}
+                  </span>
+                </div>
+              )}
+              
+              {/* Running animation dot */}
+              {timer.status === 'running' && (
+                <motion.div 
+                  className="absolute -right-1 -top-1 w-3 h-3 bg-green-500 rounded-full"
+                  animate={{ 
+                    opacity: [0.5, 1, 0.5],
+                    scale: [0.8, 1.2, 0.8]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "loop"
+                  }}
+                />
+              )}
+            </motion.div>
           </div>
         </div>
         

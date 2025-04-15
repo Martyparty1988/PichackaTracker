@@ -138,6 +138,28 @@ export function useTimer() {
     }
   }, [stop, reset, updateDeductionFund, vibrateDevice]);
 
+  // Calculate the current progress for the animation
+  const calculateProgressOffset = useMemo(() => {
+    // Calculate based on minutes - we'll use a 1-hour cycle for the ring
+    // 264 is the circumference of the circle with radius 42 (2*PI*r)
+    const maxDuration = 60; // 60 minutes in a full circle
+    const totalMinutes = currentDurationMinutes % maxDuration; // Wrap around after an hour
+    
+    // For paused or stopped, we want to show the current progress
+    // For running, we'll animate from current position to full circle
+    const progressPercentage = Math.min(1, totalMinutes / maxDuration);
+    const offset = 264 - (progressPercentage * 264);
+    
+    return offset;
+  }, [currentDurationMinutes]);
+  
+  // Calculate the target position for animation (where we're headed to)
+  const targetProgressOffset = useMemo(() => {
+    if (status === 'stopped') return 264; // Full circle when stopped (no progress)
+    if (status === 'paused') return calculateProgressOffset; // Current position when paused
+    return 0; // When running, animate to full completion
+  }, [status, calculateProgressOffset]);
+
   return {
     personId,
     activityId,
@@ -149,6 +171,8 @@ export function useTimer() {
     currentDeduction: getCurrentDeduction(),
     currentDurationMinutes,
     startTimeFormatted,
+    currentProgressOffset: calculateProgressOffset,
+    targetProgressOffset,
     actions: {
       setPersonId,
       setActivityId,
