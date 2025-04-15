@@ -10,8 +10,14 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
+  // Funkce pro přepnutí stavu postranní lišty
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+  
+  // Funkce pro zavření postranní lišty
+  const closeSidebar = () => {
+    setSidebarOpen(false);
   };
   
   return (

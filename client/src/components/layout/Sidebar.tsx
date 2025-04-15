@@ -5,12 +5,21 @@ import useFinancesStore from '@/lib/financesStore';
 
 interface SidebarProps {
   isOpen: boolean;
+  closeSidebar?: () => void; // Přidáno pro automatické zavírání při kliknutí
 }
 
-export function Sidebar({ isOpen }: SidebarProps) {
+export function Sidebar({ isOpen, closeSidebar }: SidebarProps) {
   const [location] = useLocation();
   const { getRentProgress } = useFinancesStore();
   const rentProgress = getRentProgress();
+  
+  // Funkce která se volá při kliknutí na odkaz
+  const handleLinkClick = () => {
+    // Pouze na mobilních zařízeních - zavře postranní lištu po kliknutí
+    if (window.innerWidth < 768 && closeSidebar) {
+      closeSidebar();
+    }
+  };
   
   return (
     <div className={cn(
@@ -22,10 +31,13 @@ export function Sidebar({ isOpen }: SidebarProps) {
         <ul className="space-y-2">
           <li>
             <Link href="/">
-              <a className={cn(
-                "flex items-center p-3 rounded-lg transition-colors",
-                location === "/" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
-              )}>
+              <a 
+                className={cn(
+                  "flex items-center p-3 rounded-lg transition-colors",
+                  location === "/" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
+                )}
+                onClick={handleLinkClick}
+              >
                 <i className='bx bx-home-alt text-xl mr-3'></i>
                 <span className={cn(location === "/" ? "font-medium" : "")}>Dashboard</span>
               </a>
@@ -33,10 +45,13 @@ export function Sidebar({ isOpen }: SidebarProps) {
           </li>
           <li>
             <Link href="/work-logs">
-              <a className={cn(
-                "flex items-center p-3 rounded-lg transition-colors",
-                location === "/work-logs" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
-              )}>
+              <a 
+                className={cn(
+                  "flex items-center p-3 rounded-lg transition-colors",
+                  location === "/work-logs" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
+                )}
+                onClick={handleLinkClick}
+              >
                 <i className='bx bx-calendar-check text-xl mr-3'></i>
                 <span className={cn(location === "/work-logs" ? "font-medium" : "")}>Pracovní záznamy</span>
               </a>
@@ -44,10 +59,13 @@ export function Sidebar({ isOpen }: SidebarProps) {
           </li>
           <li>
             <Link href="/finance">
-              <a className={cn(
-                "flex items-center p-3 rounded-lg transition-colors",
-                location === "/finance" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
-              )}>
+              <a 
+                className={cn(
+                  "flex items-center p-3 rounded-lg transition-colors",
+                  location === "/finance" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
+                )}
+                onClick={handleLinkClick}
+              >
                 <i className='bx bx-money text-xl mr-3'></i>
                 <span className={cn(location === "/finance" ? "font-medium" : "")}>Finance</span>
               </a>
@@ -55,10 +73,13 @@ export function Sidebar({ isOpen }: SidebarProps) {
           </li>
           <li>
             <Link href="/debts">
-              <a className={cn(
-                "flex items-center p-3 rounded-lg transition-colors",
-                location === "/debts" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
-              )}>
+              <a 
+                className={cn(
+                  "flex items-center p-3 rounded-lg transition-colors",
+                  location === "/debts" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
+                )}
+                onClick={handleLinkClick}
+              >
                 <i className='bx bx-credit-card text-xl mr-3'></i>
                 <span className={cn(location === "/debts" ? "font-medium" : "")}>Dluhy a splátky</span>
               </a>
@@ -66,10 +87,13 @@ export function Sidebar({ isOpen }: SidebarProps) {
           </li>
           <li>
             <Link href="/settings">
-              <a className={cn(
-                "flex items-center p-3 rounded-lg transition-colors",
-                location === "/settings" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
-              )}>
+              <a 
+                className={cn(
+                  "flex items-center p-3 rounded-lg transition-colors",
+                  location === "/settings" ? "bg-primary/10 text-primary" : "hover:bg-neutral-gray text-gray-700"
+                )}
+                onClick={handleLinkClick}
+              >
                 <i className='bx bx-cog text-xl mr-3'></i>
                 <span className={cn(location === "/settings" ? "font-medium" : "")}>Nastavení</span>
               </a>
