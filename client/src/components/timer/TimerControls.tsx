@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { PlayCircle, PauseCircle, StopCircle, Play, Pause, CheckCircle } from 'lucide-react';
+import { playStartSound, playPauseSound, playStopSound } from '@/lib/sounds';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,8 @@ export function TimerControls() {
   const { toast } = useToast();
   
   const handleStart = () => {
+    // Přehrání zvuku při spuštění časovače
+    playStartSound();
     actions.start();
     toast({
       title: "Časovač spuštěn",
@@ -29,6 +32,8 @@ export function TimerControls() {
   };
   
   const handlePause = () => {
+    // Přehrání zvuku při pozastavení časovače
+    playPauseSound();
     actions.pause();
     toast({
       title: "Časovač pozastaven",
@@ -37,6 +42,8 @@ export function TimerControls() {
   };
   
   const handleResume = () => {
+    // Přehrání zvuku při obnovení časovače
+    playStartSound();
     actions.resume();
     toast({
       title: "Časovač obnoven",
@@ -45,6 +52,8 @@ export function TimerControls() {
   };
   
   const handleStop = () => {
+    // Přehrání zvuku při ukončení časovače
+    playStopSound();
     actions.stop();
     toast({
       title: "Záznam uložen",
