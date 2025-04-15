@@ -27,7 +27,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <div className="flex flex-1">
         <Sidebar isOpen={sidebarOpen} closeSidebar={closeSidebar} />
         
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto mt-16">
+        <main className="flex-1 p-4 pb-14 md:p-6 overflow-y-auto mt-10">
           {children}
         </main>
       </div>

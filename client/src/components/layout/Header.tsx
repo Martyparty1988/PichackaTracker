@@ -29,31 +29,31 @@ export function Header({ toggleSidebar }: HeaderProps) {
   };
   
   return (
-    <header className="sticky top-0 z-40 w-full flex justify-between items-center p-4 border-b border-gray-200 bg-white/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full flex justify-between items-center py-2 px-3 border-b border-gray-200 bg-white/90 backdrop-blur-md">
       <div className="flex items-center">
         <button 
           onClick={toggleSidebar}
-          className="md:hidden p-2 rounded-full hover:bg-neutral-gray"
+          className="md:hidden py-1 px-1.5 rounded-full hover:bg-neutral-gray"
         >
-          <i className='bx bx-menu text-xl'></i>
+          <i className='bx bx-menu text-lg'></i>
         </button>
-        <div className="flex items-center ml-2 md:ml-0">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-            <i className='bx bx-time text-white'></i>
+        <div className="flex items-center ml-1.5 md:ml-0">
+          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+            <i className='bx bx-time text-white text-sm'></i>
           </div>
-          <h1 className="text-xl font-heading font-bold ml-2">{getTitle()}</h1>
+          <h1 className="text-base font-heading font-medium ml-1.5">{getTitle()}</h1>
         </div>
       </div>
       
       {user && (
         <div className="flex items-center">
-          <button className="p-2 rounded-full hover:bg-neutral-gray mr-2">
-            <i className='bx bx-bell text-xl'></i>
+          <button className="py-1 px-1.5 rounded-full hover:bg-neutral-gray mr-1.5">
+            <i className='bx bx-bell text-lg'></i>
           </button>
-          <div className="flex items-center ml-2">
-            <span className="text-sm font-medium mr-2 hidden md:block">{user.displayName}</span>
-            <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-dark">{user.avatarInitials}</span>
+          <div className="flex items-center ml-1">
+            <span className="text-xs font-medium mr-1.5 hidden md:block">{user.displayName}</span>
+            <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center">
+              <span className="text-xs font-medium text-dark">{user.avatarInitials}</span>
             </div>
           </div>
         </div>
